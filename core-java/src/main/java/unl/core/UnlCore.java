@@ -1,10 +1,12 @@
 package unl.core;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UnlCore {
+    private final static int defaultPrecision = 9;
     private final static String base32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     /**
@@ -88,6 +90,26 @@ public class UnlCore {
         );
     }
 
+    public String encode(double lat, double lon, int precision) {
+        return encode(lat, lon, precision, new Elevation(0, "floor"));
+    }
+
+    public String encode(double lat, double lon, Elevation elevation) {
+        // refine locationId until it matches precision of supplied lat/lon
+        for (int p = 1; p <= defaultPrecision; p++) {
+            String hash = encode(lat, lon, p);
+            PointWithElevation posn = decode(hash);
+            if (posn.getCoordinates().getLat() == lat && posn.getCoordinates().getLon() == lon)
+                return hash;
+        }
+
+        return encode(lat, lon, defaultPrecision , elevation);
+    }
+
+    public String encode(double lat, double lon) {
+        return encode(lat, lon, new Elevation(0, "floor"));
+    }
+
     /**
      * Decode locationId to latitude/longitude and elevation (location is approximate centre of locationId cell,
      * to reasonable precision).
@@ -112,8 +134,8 @@ public class UnlCore {
         double lon = (lonMin + lonMax) / 2;
 
         // round to close to centre without excessive precision: ⌊2-log10(Δ°)⌋ decimal places
-        lat = new BigDecimal(lat).setScale((int) Math.floor(2 - Math.log(latMax - latMin) / Math.log(10))).doubleValue();
-        lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10))).doubleValue();
+        lat = new BigDecimal(lat).setScale((int) Math.floor(2 - Math.log(latMax - latMin) / Math.log(10)),  BigDecimal.ROUND_HALF_DOWN).doubleValue();
+        lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10)), BigDecimal.ROUND_HALF_DOWN).doubleValue();
 
         return new PointWithElevation(
                 new Point(lat, lon),
@@ -181,7 +203,7 @@ public class UnlCore {
             elevation = Integer.parseInt(locationIdWithElevation.split("@")[1]);
         }
 
-        return new LocationIdWithElevation(locationIdWithElevation, new Elevation(elevation, elevationType));
+        return new LocationIdWithElevation(locationIdWithoutElevation, new Elevation(elevation, elevationType));
     }
 
     public BoundsWithElevation bounds(String locationId) {
@@ -227,8 +249,10 @@ public class UnlCore {
         }
 
         BoundsWithElevation resultBounds = new BoundsWithElevation(
-                new Point(latMin, lonMin),
-                new Point(latMax, lonMax),
+                new Bounds(
+                        new Point(latMin, lonMin),
+                        new Point(latMax, lonMax)
+                ),
                 new Elevation(locationIdWithElevation.getElevation().getElevationNumber(), locationIdWithElevation.getElevation().getElevationType())
         );
 
@@ -373,5 +397,9 @@ public class UnlCore {
         }
 
         return lines;
+    }
+
+    public List<double[][]> gridLines(Bounds bounds) {
+        return gridLines(bounds, defaultPrecision);
     }
 }
