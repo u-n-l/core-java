@@ -97,9 +97,9 @@ public class UnlCore {
      * var latlon = UnlCore.decode('u120fxw@3'); // => { lat: 52.205, lon: 0.1188, elevation:3, elevationType: floor,  bounds: {elevation:0, elevationType:floor, ne: {lat: 52.205657958984375, lon: 0.119476318359375}, sw: {lat: 52.20428466796875, lon: 0.11810302734375}}}
      * var latlon = UnlCore.decode('u120fxw#87'); // => { lat: 52.205, lon: 0.1188, elevation:87, elevationType: heightincm,  bounds: {elevation:0, elevationType:floor, ne: {lat: 52.205657958984375, lon: 0.119476318359375}, sw: {lat: 52.20428466796875, lon: 0.11810302734375}}}
      */
-    public DecodingResult decode(String locationId) {
-        LocationId locationIdWithElevation = excludeElevation(locationId);
-        Bounds bounds = bounds(locationIdWithElevation.getLocationId());
+    public PointWithElevation decode(String locationId) {
+        LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
+        BoundsWithElevation bounds = bounds(locationIdWithElevation.getLocationId());
 
         double latMin = bounds.getSw().getLat(), lonMin = bounds.getSw().getLon();
         double latMax = bounds.getNe().getLat(), lonMax = bounds.getNe().getLon();
@@ -112,8 +112,8 @@ public class UnlCore {
         lat = new BigDecimal(lat).setScale((int) Math.floor(2 - Math.log(latMax - latMin) / Math.log(10))).doubleValue();
         lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10))).doubleValue();
 
-        return new DecodingResult(
-                new Coordinates(lat, lon),
+        return new PointWithElevation(
+                new Point(lat, lon),
                 locationIdWithElevation.getElevation(),
                 bounds
         );
@@ -154,7 +154,7 @@ public class UnlCore {
      * @throws Invalid locationId.
      * @returns {locationId: string, elevation: Number, elevationType: string }
      */
-    public LocationId excludeElevation(String locationIdWithElevation) {
+    public LocationIdWithElevation excludeElevation(String locationIdWithElevation) {
         if (locationIdWithElevation.length() < 0) {
             throw new Error("Invalid locationId");
         }
@@ -178,11 +178,11 @@ public class UnlCore {
             elevation = Integer.parseInt(locationIdWithElevation.split("@")[1]);
         }
 
-        return new LocationId(locationIdWithElevation, new Elevation(elevation, elevationType));
+        return new LocationIdWithElevation(locationIdWithElevation, new Elevation(elevation, elevationType));
     }
 
-    public Bounds bounds(String locationId) {
-        LocationId locationIdWithElevation = excludeElevation(locationId);
+    public BoundsWithElevation bounds(String locationId) {
+        LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
         String locationIdWithoutElevation = locationIdWithElevation.getLocationId();
 
         boolean evenBit = true;
@@ -223,9 +223,9 @@ public class UnlCore {
 
         }
 
-        Bounds resultBounds = new Bounds(
-                new Coordinates(latMin, lonMin),
-                new Coordinates(latMax, lonMax),
+        BoundsWithElevation resultBounds = new BoundsWithElevation(
+                new Point(latMin, lonMin),
+                new Point(latMax, lonMax),
                 new Elevation(locationIdWithElevation.getElevation().getElevationNumber(), locationIdWithElevation.getElevation().getElevationType())
         );
 
@@ -242,10 +242,10 @@ public class UnlCore {
      */
     public String adjacent(String locationId, String direction) {
         // based on github.com/davetroy/geohash-js
-        LocationId locationIdWithExcludedElevation = excludeElevation((locationId));
-        String locationIdString = locationIdWithExcludedElevation.getLocationId();
-        int elevation = locationIdWithExcludedElevation.getElevation().getElevationNumber();
-        String elevationType = locationIdWithExcludedElevation.getElevation().getElevationType();
+        LocationIdWithElevation locationIdWithElevation = excludeElevation((locationId));
+        String locationIdString = locationIdWithElevation.getLocationId();
+        int elevation = locationIdWithElevation.getElevation().getElevationNumber();
+        String elevationType = locationIdWithElevation.getElevation().getElevationType();
 
 
         String directionChar = direction.toLowerCase();
@@ -298,10 +298,30 @@ public class UnlCore {
         String nextLocationId =
                 parent + UnlCore.base32.charAt(neighbour[directionNumber][type].indexOf(lastCh));
 
-        if(elevation != 0 && !elevationType.equals("")){
-            return appendElevation(nextLocationId, locationIdWithExcludedElevation.getElevation());
+        if (elevation != 0 && !elevationType.equals("")) {
+            return appendElevation(nextLocationId, locationIdWithElevation.getElevation());
         }
 
         return nextLocationId;
+    }
+
+    /**
+     * Returns all 8 adjacent cells to specified locationId.
+     *
+     * @param {string} locationId - LocationId neighbours are required of.
+     * @throws Invalid locationId.
+     * @returns {{n,ne,e,se,s,sw,w,nw: string}}
+     */
+    public Neighbour neighbour(String locationId) {
+        return new Neighbour(
+                adjacent(locationId, "n"),
+                adjacent(adjacent(locationId, "n"), "e"),
+                adjacent(locationId, "e"),
+                adjacent(adjacent(locationId, "s"), "e"),
+                adjacent(locationId, "s"),
+                adjacent(adjacent(locationId, "s"), "w"),
+                adjacent(locationId, "w"),
+                adjacent(adjacent(locationId, "n"), "w")
+        );
     }
 }

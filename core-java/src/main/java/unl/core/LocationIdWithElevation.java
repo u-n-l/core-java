@@ -1,10 +1,10 @@
 package unl.core;
 
-public class LocationId {
+public class LocationIdWithElevation {
     private String locationId;
     private Elevation elevation;
 
-    public LocationId(String locationId, Elevation elevation) {
+    public LocationIdWithElevation(String locationId, Elevation elevation) {
         this.locationId = locationId;
         this.elevation = elevation;
     }

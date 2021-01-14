@@ -1,10 +1,10 @@
 package unl.core;
 
-public class Coordinates {
+public class Point {
     private double lat;
     private double lon;
 
-    public Coordinates(double lat, double lon) {
+    public Point(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
     }
