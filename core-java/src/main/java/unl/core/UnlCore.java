@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UnlCore {
-    private final static int DEFAULT_PRECISION = 9;
+    public final static int DEFAULT_PRECISION = 9;
+    public final static Elevation DEFAULT_ELEVATION = new Elevation(0, "floor");
     private final static String BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     /**
@@ -74,7 +75,7 @@ public class UnlCore {
 
             if (++bit == 5) {
                 // 5 bits gives us a character: append it and start over
-                locationId.append(UnlCore.BASE32.charAt(idx));
+                locationId.append(BASE32.charAt(idx));
                 bit = 0;
                 idx = 0;
             }
@@ -100,7 +101,7 @@ public class UnlCore {
      * @example String locationId = var locationId = UnlCore.getInstance().encode(52.205, 0.119, new Elevation(2, "floor")); // => 'u120fxw@2'
      */
     public String encode(double lat, double lon, int precision) {
-        return encode(lat, lon, precision, new Elevation(0, "floor"));
+        return encode(lat, lon, precision, DEFAULT_ELEVATION);
     }
 
     /**
@@ -136,7 +137,7 @@ public class UnlCore {
      * @example String locationId = UnlCore.getInstance().encode(57.64, 10.41); // => 'u4pruvh36'
      */
     public String encode(double lat, double lon) {
-        return encode(lat, lon, new Elevation(0, "floor"));
+        return encode(lat, lon, DEFAULT_ELEVATION);
     }
 
     /**
@@ -251,7 +252,7 @@ public class UnlCore {
 
         for (int i = 0; i < locationIdWithoutElevation.length(); i++) {
             char chr = locationIdWithoutElevation.charAt(i);
-            int idx = UnlCore.BASE32.indexOf(chr);
+            int idx = BASE32.indexOf(chr);
 
             if (idx == -1) throw new Error("Invalid locationId");
 
@@ -358,7 +359,7 @@ public class UnlCore {
 
         // append letter for direction to parent
         String nextLocationId =
-                parent + UnlCore.BASE32.charAt(neighbour[directionNumber][type].indexOf(lastCh));
+                parent + BASE32.charAt(neighbour[directionNumber][type].indexOf(lastCh));
 
         if (elevation != 0 && !elevationType.equals("")) {
             return appendElevation(nextLocationId, locationIdWithElevation.getElevation());
@@ -410,7 +411,7 @@ public class UnlCore {
                 bounds.getSw().getLat(),
                 bounds.getSw().getLon(),
                 precision,
-                new Elevation(0, "floor")
+                DEFAULT_ELEVATION
         );
         BoundsWithElevation swCellBounds = bounds(swCellLocationId);
 
