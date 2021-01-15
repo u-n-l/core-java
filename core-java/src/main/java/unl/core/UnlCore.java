@@ -38,6 +38,10 @@ public class UnlCore {
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7, new Elevation(9, "floor")); // => 'u120fxw@9'
      */
     public String encode(double lat, double lon, int precision, Elevation elevationOptions) {
+        if(Double.isNaN(lat) || Double.isNaN(lon) || Double.isNaN(precision)){
+            throw new IllegalArgumentException("Invalid coordinates or precision");
+        }
+
         int idx = 0;
         int bit = 0;
         boolean evenBit = true;
@@ -185,7 +189,7 @@ public class UnlCore {
      */
     public String appendElevation(String locationIdWithoutElevation, Elevation elevationOptions) {
         if (locationIdWithoutElevation.length() < 0) {
-            throw new Error("Invalid locationId");
+            throw new IllegalArgumentException("Invalid locationId");
         }
 
         if (elevationOptions.getElevationNumber() == 0) {
@@ -210,11 +214,11 @@ public class UnlCore {
      */
     public LocationIdWithElevation excludeElevation(String locationIdWithElevation) {
         if (locationIdWithElevation.length() < 0) {
-            throw new Error("Invalid locationId");
+            throw new IllegalArgumentException("Invalid locationId");
         }
 
         if (locationIdWithElevation.contains("#") && locationIdWithElevation.contains("@")) {
-            throw new Error("Invalid locationId");
+            throw new IllegalArgumentException("Invalid locationId");
         }
 
         String locationIdWithoutElevation = locationIdWithElevation.toLowerCase();
@@ -254,7 +258,7 @@ public class UnlCore {
             char chr = locationIdWithoutElevation.charAt(i);
             int idx = BASE32.indexOf(chr);
 
-            if (idx == -1) throw new Error("Invalid locationId");
+            if (idx == -1) throw new IllegalArgumentException("Invalid locationId");
 
             for (int n = 4; n >= 0; n--) {
                 int bitN = (idx >> n) & 1;
@@ -304,6 +308,7 @@ public class UnlCore {
      * @return LocationId of adjacent cell.
      */
     public String adjacent(String locationId, String direction) {
+        final String DIRECTIONS_STRING = "nsew";
         // based on github.com/davetroy/geohash-js
         LocationIdWithElevation locationIdWithElevation = excludeElevation((locationId));
         String locationIdString = locationIdWithElevation.getLocationId();
@@ -312,13 +317,13 @@ public class UnlCore {
 
 
         String directionChar = direction.toLowerCase();
-        int directionNumber = 0;
+        int directionNumber;
 
         if (locationIdString.length() == 0) {
-            throw new Error("Invalid locationId");
+            throw new IllegalArgumentException("Invalid locationId");
         }
-        if (!"nsew".contains(direction)) {
-            throw new Error("Invalid direction");
+        if (!DIRECTIONS_STRING.contains(direction)) {
+            throw new IllegalArgumentException("Invalid direction");
         }
 
         switch (directionChar) {
