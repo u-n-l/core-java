@@ -3,9 +3,9 @@ package unl.core;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UnlCoreTest {
+public class UnlCoreUnitTest {
     @Test
-    public void encode() {
+    public void encodeTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
@@ -26,7 +26,7 @@ public class UnlCoreTest {
     }
 
     @Test
-    public void decode() {
+    public void decodeTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
         Elevation defaultElevation = new Elevation(0, "floor");
@@ -113,7 +113,7 @@ public class UnlCoreTest {
 
 
     @Test
-    public void appendElevation() {
+    public void appendElevationTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
@@ -129,7 +129,7 @@ public class UnlCoreTest {
     }
 
     @Test
-    public void excludeElevation() {
+    public void excludeElevationTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
@@ -151,7 +151,7 @@ public class UnlCoreTest {
     }
 
     @Test
-    public void adjacent() {
+    public void adjacentTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
@@ -160,7 +160,7 @@ public class UnlCoreTest {
     }
 
     @Test
-    public void neighbour() {
+    public void neighbourTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
@@ -186,7 +186,7 @@ public class UnlCoreTest {
     }
 
     @Test
-    public void gridLines() {
+    public void gridLinesTest() {
         /* get UnlCore instance */
         UnlCore unlCoreInstance = UnlCore.getInstance();
 
