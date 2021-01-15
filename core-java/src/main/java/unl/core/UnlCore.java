@@ -91,7 +91,7 @@ public class UnlCore {
         int elevation = elevationOptions.getElevationNumber();
         String elevationType = elevationOptions.getElevationType();
 
-        return UnlCore.getInstance().appendElevation(
+        return appendElevation(
                 locationId.toString(),
                 new Elevation(elevation, elevationType)
         );

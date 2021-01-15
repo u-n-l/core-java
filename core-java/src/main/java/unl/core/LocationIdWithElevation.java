@@ -14,7 +14,6 @@ public class LocationIdWithElevation {
     public LocationIdWithElevation(@NotNull String locationId, @Nullable Elevation elevation) {
         this.locationId = locationId;
         if (elevation == null) {
-            UnlCore.getInstance();
             this.elevation = UnlCore.DEFAULT_ELEVATION;
         } else {
             this.elevation = elevation;
@@ -23,7 +22,6 @@ public class LocationIdWithElevation {
 
     public LocationIdWithElevation(@NotNull String locationId) {
         this.locationId = locationId;
-        UnlCore.getInstance();
         this.elevation = UnlCore.DEFAULT_ELEVATION;
     }
 
