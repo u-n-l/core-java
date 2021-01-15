@@ -1,18 +1,37 @@
 package unl.core;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 public class Neighbour {
+    @NotNull
     private String n;
+    @NotNull
     private String ne;
+    @NotNull
     private String e;
+    @NotNull
     private String se;
+    @NotNull
     private String s;
+    @NotNull
     private String sw;
+    @NotNull
     private String w;
+    @NotNull
     private String nw;
 
-    public Neighbour(String n, String ne, String e, String se, String s, String sw, String w, String nw) {
+    public Neighbour(
+            @NotNull String n,
+            @NotNull String ne,
+            @NotNull String e,
+            @NotNull String se,
+            @NotNull String s,
+            @NotNull String sw,
+            @NotNull String w,
+            @NotNull String nw) {
         this.n = n;
         this.ne = ne;
         this.e = e;
@@ -24,7 +43,7 @@ public class Neighbour {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable  Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Neighbour neighbour = (Neighbour) o;
