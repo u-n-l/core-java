@@ -3,14 +3,14 @@ package unl.core;
 import java.util.Objects;
 
 public class Neighbour {
-    public String n;
-    public String ne;
-    public String e;
-    public String se;
-    public String s;
-    public String sw;
-    public String w;
-    public String nw;
+    private String n;
+    private String ne;
+    private String e;
+    private String se;
+    private String s;
+    private String sw;
+    private String w;
+    private String nw;
 
     public Neighbour(String n, String ne, String e, String se, String s, String sw, String w, String nw) {
         this.n = n;
