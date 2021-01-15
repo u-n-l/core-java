@@ -11,7 +11,7 @@ public class BoundsWithElevation {
     @NotNull
     private Elevation elevation;
 
-    public BoundsWithElevation(@NotNull Bounds bounds,@NotNull Elevation elevation) {
+    public BoundsWithElevation(@NotNull Bounds bounds, @NotNull Elevation elevation) {
         this.bounds = bounds;
         this.elevation = elevation;
     }

@@ -12,7 +12,7 @@ public class Elevation {
 
     public Elevation(int elevationNumber, @Nullable String elevationType) {
         this.elevationNumber = elevationNumber;
-        if(elevationType == null){
+        if (elevationType == null) {
             this.elevationType = "floor";
         } else {
             this.elevationType = elevationType;
@@ -23,7 +23,7 @@ public class Elevation {
         this.elevationNumber = elevationNumber;
         this.elevationType = "floor";
     }
-    
+
     public int getElevationNumber() {
         return this.elevationNumber;
     }

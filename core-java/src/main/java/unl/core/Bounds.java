@@ -11,7 +11,7 @@ public class Bounds {
     @NotNull
     private Point ne;
 
-    public Bounds(@NotNull Point sw,@NotNull Point ne) {
+    public Bounds(@NotNull Point sw, @NotNull Point ne) {
         this.sw = sw;
         this.ne = ne;
     }
@@ -20,6 +20,7 @@ public class Bounds {
     public Point getSw() {
         return this.sw;
     }
+
     @NotNull
     public Point getNe() {
         return this.ne;

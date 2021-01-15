@@ -15,7 +15,7 @@ public class PointWithElevation {
 
     public PointWithElevation(@NotNull Point coordinates, @Nullable Elevation elevation, @NotNull BoundsWithElevation bounds) {
         this.coordinates = coordinates;
-        if(elevation == null){
+        if (elevation == null) {
             this.elevation = UnlCore.DEFAULT_ELEVATION;
         } else {
             this.elevation = elevation;
