@@ -2,8 +2,6 @@ package unl.core;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class Point {
     private double lat;
     private double lon;
@@ -12,7 +10,6 @@ public class Point {
         this.lat = lat;
         this.lon = lon;
     }
-
 
     public double getLat() {
         return this.lat;

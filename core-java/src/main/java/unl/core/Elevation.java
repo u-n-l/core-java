@@ -10,18 +10,13 @@ public class Elevation {
     @NotNull
     private String elevationType;
 
-    public Elevation(int elevationNumber, @Nullable String elevationType) {
+    public Elevation(int elevationNumber, @NotNull String elevationType) {
         this.elevationNumber = elevationNumber;
-        if (elevationType == null) {
-            this.elevationType = "floor";
-        } else {
-            this.elevationType = elevationType;
-        }
+        this.elevationType = elevationType;
     }
 
     public Elevation(int elevationNumber) {
-        this.elevationNumber = elevationNumber;
-        this.elevationType = "floor";
+        this(elevationNumber, "floor");
     }
 
     public int getElevationNumber() {

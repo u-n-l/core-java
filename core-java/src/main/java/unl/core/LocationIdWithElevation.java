@@ -11,18 +11,13 @@ public class LocationIdWithElevation {
     @NotNull
     private Elevation elevation;
 
-    public LocationIdWithElevation(@NotNull String locationId, @Nullable Elevation elevation) {
+    public LocationIdWithElevation(@NotNull String locationId, @NotNull Elevation elevation) {
         this.locationId = locationId;
-        if (elevation == null) {
-            this.elevation = UnlCore.DEFAULT_ELEVATION;
-        } else {
-            this.elevation = elevation;
-        }
+        this.elevation = elevation;
     }
 
     public LocationIdWithElevation(@NotNull String locationId) {
-        this.locationId = locationId;
-        this.elevation = UnlCore.DEFAULT_ELEVATION;
+        this(locationId, UnlCore.DEFAULT_ELEVATION);
     }
 
     @NotNull

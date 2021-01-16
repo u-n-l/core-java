@@ -42,6 +42,46 @@ public class Neighbour {
         this.nw = nw;
     }
 
+    @NotNull
+    public String getN() {
+        return n;
+    }
+
+    @NotNull
+    public String getNe() {
+        return ne;
+    }
+
+    @NotNull
+    public String getE() {
+        return e;
+    }
+
+    @NotNull
+    public String getSe() {
+        return se;
+    }
+
+    @NotNull
+    public String getS() {
+        return s;
+    }
+
+    @NotNull
+    public String getSw() {
+        return sw;
+    }
+
+    @NotNull
+    public String getW() {
+        return w;
+    }
+
+    @NotNull
+    public String getNw() {
+        return nw;
+    }
+
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;

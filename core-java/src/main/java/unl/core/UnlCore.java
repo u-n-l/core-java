@@ -12,7 +12,7 @@ public class UnlCore {
     private final static String BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     /**
-     * The unique instance of the Unl Core class
+     * The unique instance of the UnlCore class.
      */
     private static UnlCore instance;
 
@@ -31,12 +31,12 @@ public class UnlCore {
      * Encodes latitude/longitude coordinates to locationId, to specified precision.
      * Elevation information is specified in elevationOptions parameter.
      *
-     * @param lat              - Latitude in degrees.
-     * @param lon              - Longitude in degrees.
-     * @param precision        - Number of characters in resulting locationId.
-     * @param elevationOptions - elevation options, including elevation number and type.
-     * @return locationId of supplied latitude/longitude.
-     * @throws IllegalArgumentException when the coordinates are invalid.
+     * @param lat              the latitude in degrees.
+     * @param lon              the longitude in degrees.
+     * @param precision        the number of characters in resulting locationId.
+     * @param elevationOptions the elevation options, including elevation number and type: 'floor' | 'heightincm'.
+     * @return the locationId of supplied latitude/longitude.
+     * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7, new Elevation(9, "floor")); // => 'u120fxw@9'
      */
     @NotNull
@@ -90,21 +90,22 @@ public class UnlCore {
 
         int elevation = elevationOptions.getElevationNumber();
         String elevationType = elevationOptions.getElevationType();
+        Elevation elevationObject = new Elevation(elevation, elevationType);
 
         return appendElevation(
                 locationId.toString(),
-                new Elevation(elevation, elevationType)
+                elevationObject
         );
     }
 
     /**
      * Encodes latitude/longitude coordinates to locationId, to specified precision.
      *
-     * @param lat       - Latitude in degrees.
-     * @param lon       - Longitude in degrees.
-     * @param precision - Number of characters in resulting locationId.
-     * @return locationId of supplied latitude/longitude.
-     * @throws IllegalArgumentException when the coordinates are invalid.
+     * @param lat       the latitude in degrees.
+     * @param lon       the longitude in degrees.
+     * @param precision the number of characters in resulting locationId.
+     * @return the locationId of supplied latitude/longitude.
+     * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = var locationId = UnlCore.getInstance().encode(52.205, 0.119, new Elevation(2, "floor")); // => 'u120fxw@2'
      */
     @NotNull
@@ -116,11 +117,11 @@ public class UnlCore {
      * Encodes latitude/longitude coordinates to locationId, to default precision: 9.
      * Elevation information is specified in options parameter.
      *
-     * @param lat              - Latitude in degrees.
-     * @param lon              - Longitude in degrees.
-     * @param elevationOptions - elevation options, including elevation number and type.
-     * @return locationId of supplied latitude/longitude.
-     * @throws IllegalArgumentException - the coordinates are invalid.
+     * @param lat              the latitude in degrees.
+     * @param lon              the longitude in degrees.
+     * @param elevationOptions the elevation options, including elevation number and type.
+     * @return the locationId of supplied latitude/longitude.
+     * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7); // => 'u120fxw'
      */
     @NotNull
@@ -139,10 +140,10 @@ public class UnlCore {
     /**
      * Encodes latitude/longitude coordinates to locationId, to default precision: 9.
      *
-     * @param lat - Latitude in degrees.
-     * @param lon - Longitude in degrees.
-     * @return locationId of supplied latitude/longitude.
-     * @throws IllegalArgumentException when the coordinates are invalid
+     * @param lat the latitude in degrees.
+     * @param lon the longitude in degrees.
+     * @return the locationId of supplied latitude/longitude.
+     * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = UnlCore.getInstance().encode(57.64, 10.41); // => 'u4pruvh36'
      */
     @NotNull
@@ -154,9 +155,9 @@ public class UnlCore {
      * Decode locationId to latitude/longitude and elevation (location is approximate centre of locationId cell,
      * to reasonable precision).
      *
-     * @param locationId - LocationId string to be converted to latitude/longitude.
-     * @return an instance of PointWithElevation, containing: center of locationId, elevation and SW/NE latitude/longitude bounds of the locationId.
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationId the locationId string to be converted to latitude/longitude.
+     * @return an instance of PointWithElevation, containing: center of locationId, elevation info and SW/NE latitude/longitude bounds of the locationId.
+     * @throws IllegalArgumentException if the locationId is invalid.
      * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(0, "floor")))
      * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(3, "floor")))
      * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(87, "heightincm")))
@@ -178,21 +179,18 @@ public class UnlCore {
         lat = new BigDecimal(lat).setScale((int) Math.floor(2 - Math.log(latMax - latMin) / Math.log(10)), BigDecimal.ROUND_HALF_DOWN).doubleValue();
         lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10)), BigDecimal.ROUND_HALF_DOWN).doubleValue();
 
-        return new PointWithElevation(
-                new Point(lat, lon),
-                locationIdWithElevation.getElevation(),
-                boundsWithElevation
-        );
+        Point point = new Point(lat, lon);
+        return new PointWithElevation(point, locationIdWithElevation.getElevation(), boundsWithElevation);
     }
 
     /**
-     * Adds elevation chars and elevation
-     * It is mainly used by internal functions
+     * Adds elevation chars and elevation.
+     * It is mainly used by internal functions.
      *
-     * @param locationIdWithoutElevation - LocationId without elevation chars.
-     * @param elevationOptions           - instance of Elevation, having the height of the elevation and elevation type (floor | heightincm) as attributes.
-     * @return string containing locationId and elevation info
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationIdWithoutElevation the locationId without elevation chars.
+     * @param elevationOptions           the instance of Elevation, having the height of the elevation and elevation type (floor | heightincm) as attributes.
+     * @return a string containing locationId and elevation info.
+     * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
     public String appendElevation(@NotNull String locationIdWithoutElevation, @NotNull Elevation elevationOptions) {
@@ -214,15 +212,15 @@ public class UnlCore {
 
     /**
      * Returns locationId and elevation properties.
-     * It is mainly used by internal functions
+     * It is mainly used by internal functions.
      *
-     * @param locationIdWithElevation - LocationId with elevation chars.
-     * @return An instance of LocationIdWithElevation.
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationIdWithElevation the locationId with elevation chars.
+     * @return an instance of LocationIdWithElevation.
+     * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
     public LocationIdWithElevation excludeElevation(@NotNull String locationIdWithElevation) {
-        if (locationIdWithElevation.length() < 0) {
+        if (locationIdWithElevation.length() == 0) {
             throw new IllegalArgumentException("Invalid locationId");
         }
 
@@ -245,15 +243,16 @@ public class UnlCore {
             elevation = Integer.parseInt(locationIdWithElevation.split("@")[1]);
         }
 
-        return new LocationIdWithElevation(locationIdWithoutElevation, new Elevation(elevation, elevationType));
+        Elevation excludedElevation = new Elevation(elevation, elevationType);
+        return new LocationIdWithElevation(locationIdWithoutElevation, excludedElevation);
     }
 
     /**
      * Returns SW/NE latitude/longitude bounds of specified locationId cell.
      *
-     * @param locationId - Cell that bounds are required of.
-     * @return instance of BoundsWithElevation having the sw/ne latitude/longitude bounds of specified locationId cell together with the elevation information
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationId the cell that bounds are required of.
+     * @return an instance of BoundsWithElevation having the sw/ne latitude/longitude bounds of specified locationId cell together with the elevation information.
+     * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
     public BoundsWithElevation bounds(@NotNull String locationId) {
@@ -295,27 +294,21 @@ public class UnlCore {
 
                 evenBit = !evenBit;
             }
-
         }
 
-        BoundsWithElevation resultBounds = new BoundsWithElevation(
-                new Bounds(
-                        new Point(latMin, lonMin),
-                        new Point(latMax, lonMax)
-                ),
-                new Elevation(locationIdWithElevation.getElevation().getElevationNumber(), locationIdWithElevation.getElevation().getElevationType())
-        );
+        Bounds bounds = new Bounds(new Point(latMin, lonMin), new Point(latMax, lonMax));
+        Elevation elevation = new Elevation(locationIdWithElevation.getElevation().getElevationNumber(), locationIdWithElevation.getElevation().getElevationType());
 
-        return resultBounds;
+        return new BoundsWithElevation(bounds, elevation);
     }
 
     /**
      * Determines adjacent cell in given direction.
      *
-     * @param locationId - Cell to which adjacent cell is required.
-     * @param direction  - Direction from locationId (N/S/E/W).
-     * @return LocationId of adjacent cell.
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationId the cell to which adjacent cell is required.
+     * @param direction  the direction from locationId (N/S/E/W).
+     * @return the locationId of adjacent cell.
+     * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
     public String adjacent(@NotNull String locationId, @NotNull String direction) {
@@ -387,9 +380,9 @@ public class UnlCore {
     /**
      * Returns all 8 adjacent cells to specified locationId.
      *
-     * @param locationId - LocationId neighbours are required of.
-     * @return and instance of Neighbour class containing the 8 adjacent cells of the specified locationId: n,ne,e,se,s,sw,w,nw.
-     * @throws IllegalArgumentException - the LocationId is invalid.
+     * @param locationId the locationId neighbours are required of.
+     * @return an instance of Neighbour class containing the 8 adjacent cells of the specified locationId: n, ne, e, se, s, sw, w, nw.
+     * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
     public Neighbour neighbour(@NotNull String locationId) {
@@ -410,9 +403,9 @@ public class UnlCore {
      * SW/NE latitude/longitude bounds and precision. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
-     * @param bounds    - The bound within to return the grid lines.
-     * @param precision - Number of characters to consider for the locationId of a grid cell
-     * @return A list of [[number, number],[number, number]] representing the grid lines.
+     * @param bounds    the bound within to return the grid lines.
+     * @param precision the number of characters to consider for the locationId of a grid cell.
+     * @return a list of double[][] representing the grid lines.
      */
     @NotNull
     public List<double[][]> gridLines(@NotNull Bounds bounds, int precision) {
@@ -467,8 +460,8 @@ public class UnlCore {
      * SW/NE latitude/longitude bounds, using the default precision: 9. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
-     * @param bounds - The bound within to return the grid lines.
-     * @return A list of [[number, number],[number, number]] representing the grid lines.
+     * @param bounds the bound within to return the grid lines.
+     * @return a list of double[][] representing the grid lines.
      */
     @NotNull
     public List<double[][]> gridLines(@NotNull Bounds bounds) {

@@ -21,6 +21,11 @@ public class BoundsWithElevation {
         return bounds;
     }
 
+    @NotNull
+    public Elevation getElevation() {
+        return elevation;
+    }
+
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
