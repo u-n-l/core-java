@@ -6,21 +6,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class Elevation {
-    private int elevationNumber;
+    private int elevation;
     @NotNull
     private String elevationType;
 
-    public Elevation(int elevationNumber, @NotNull String elevationType) {
-        this.elevationNumber = elevationNumber;
+    public Elevation(int elevation, @NotNull String elevationType) {
+        this.elevation = elevation;
         this.elevationType = elevationType;
     }
 
-    public Elevation(int elevationNumber) {
-        this(elevationNumber, "floor");
+    public Elevation(int elevation) {
+        this(elevation, "floor");
     }
 
-    public int getElevationNumber() {
-        return this.elevationNumber;
+    public int getElevation() {
+        return this.elevation;
     }
 
     @NotNull
@@ -33,7 +33,7 @@ public class Elevation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Elevation elevation = (Elevation) o;
-        return elevationNumber == elevation.elevationNumber &&
+        return this.elevation == elevation.elevation &&
                 Objects.equals(elevationType, elevation.elevationType);
     }
 }
