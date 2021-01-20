@@ -20,7 +20,8 @@ public class UnlCore {
 
     private final static String BASE_URL = "https://map.unl.global/api/v1/location/";
     private final static String WORDS_ENDPOINT = "words/";
-
+    private final static String GEOHASH_ENDPOINT = "geohash/";
+    private final static String COORDINATES_ENDPOINT = "coordinates/";
 
     /**
      * The unique instance of the UnlCore class.
@@ -498,14 +499,14 @@ public class UnlCore {
 
         String type;
         if (location.matches(LOCATION_ID_REGEX)) {
-            type = "geohash";
+            type = GEOHASH_ENDPOINT;
         } else if (location.matches(COORDINATES_REGEX)) {
-            type = "coordinates";
+            type = COORDINATES_ENDPOINT;
         } else {
             throw new IllegalArgumentException("Could not interpret your input, " + location + ". Expected a locationId or lat, lon coordinates.");
         }
 
-        String url = BASE_URL + type + "/" + location;
+        String url = BASE_URL + type + location;
         String response = LocationService.callEndpoint(url, apiKey);
         Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new LocationDeserializer()).create();
 
