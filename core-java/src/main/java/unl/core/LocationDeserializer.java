@@ -34,14 +34,10 @@ public class LocationDeserializer implements JsonDeserializer<Location> {
         );
         Bounds bounds = new Bounds(sw, ne);
 
-        BoundsWithElevation boundsWithElevation = new BoundsWithElevation(
-                bounds, elevation
-        );
-
         return new Location(
                 point,
                 elevation,
-                boundsWithElevation,
+                bounds,
                 locationJsonObject.get("geohash").getAsString(),
                 locationJsonObject.get("words").getAsString()
         );

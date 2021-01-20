@@ -8,14 +8,14 @@ public class Location {
     @NotNull
     private Elevation elevation;
     @NotNull
-    private BoundsWithElevation bounds;
+    private Bounds bounds;
     @NotNull
     private String geohash;
     @NotNull
     private String words;
 
 
-    public Location(@NotNull Point point, @NotNull Elevation elevation, @NotNull BoundsWithElevation bounds, @NotNull String geohash, @NotNull String words) {
+    public Location(@NotNull Point point, @NotNull Elevation elevation, @NotNull Bounds bounds, @NotNull String geohash, @NotNull String words) {
         this.point = point;
         this.elevation = elevation;
         this.bounds = bounds;
@@ -34,7 +34,7 @@ public class Location {
     }
 
     @NotNull
-    public BoundsWithElevation getBounds() {
+    public Bounds getBounds() {
         return bounds;
     }
 

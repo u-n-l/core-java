@@ -6,12 +6,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +17,10 @@ public class UnlCore {
     private final static String BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
     private final static String LOCATION_ID_REGEX = "^[0123456789bcdefghjkmnpqrstuvwxyz]{3,16}[@#]?[0-9]{0,3}$";
     private final static String COORDINATES_REGEX = "^-?[0-9]{0,2}\\.?[0-9]{0,16},\\s?-?[0-9]{0,3}\\.?[0-9]{0,16}$";
+
+    private final static String BASE_URL = "https://map.unl.global/api/v1/location/";
+    private final static String WORDS_ENDPOINT = "words/";
+
 
     /**
      * The unique instance of the UnlCore class.
@@ -46,7 +45,7 @@ public class UnlCore {
      * @param lat       the latitude in degrees.
      * @param lon       the longitude in degrees.
      * @param precision the number of characters in resulting locationId.
-     * @param elevation the elevation options, including elevation number and type: 'floor' | 'heightincm'.
+     * @param elevation the elevation object, containing the elevation number and type: 'floor' | 'heightincm'.
      * @return the locationId of supplied latitude/longitude.
      * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7, new Elevation(9, "floor")); // => 'u120fxw@9'
@@ -127,11 +126,11 @@ public class UnlCore {
 
     /**
      * Encodes latitude/longitude coordinates to locationId, to default precision: 9.
-     * Elevation information is specified in options parameter.
+     * Elevation information is specified in elevation parameter.
      *
      * @param lat       the latitude in degrees.
      * @param lon       the longitude in degrees.
-     * @param elevation the elevation options, including elevation number and type.
+     * @param elevation the elevation object, containing elevation number and type.
      * @return the locationId of supplied latitude/longitude.
      * @throws IllegalArgumentException if the coordinates are invalid.
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7); // => 'u120fxw'
@@ -480,53 +479,16 @@ public class UnlCore {
         return gridLines(bounds, DEFAULT_PRECISION);
     }
 
-    @Nullable
-    private String callEndpoint(@NotNull String endpoint, @NotNull String apiKey) throws UnlCoreException {
-        HttpURLConnection connection = null;
-
-        try {
-            URL url = new URL(endpoint);
-            connection = (HttpURLConnection) url.openConnection();
-
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorization", " Bearer " + apiKey);
-            connection.connect();
-
-            int status = connection.getResponseCode();
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line + "\n");
-                    }
-                    bufferedReader.close();
-                    return stringBuilder.toString();
-            }
-        } catch (IOException e) {
-            throw new UnlCoreException(e.getMessage(), e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
+     * Returns the location object, which encapsulates the coordinates, elevation, bounds, geohash and words,
+     * corresponding to the location string (id or lat-lon coordinates). It requires the api key used to access
+     * the location APIs.
+     *
      * @param location the location (Id or lat-lon coordinates) of the point for which you would like the address.
      * @param apiKey   the UNL API key used to access the location APIs.
      * @return an instance of Location class, containing the coordinates, elevation, bounds, geohash and words.
-     * @throws IllegalArgumentException if the api key string is empty.
-     * @throws UnlCoreException if the call to location endpoint is unsuccessful.
+     * @throws IllegalArgumentException if the api key string is empty or the location is invalid.
+     * @throws UnlCoreException         if the call to location endpoint is unsuccessful.
      */
     @Nullable
     public Location toWords(@NotNull String location, @NotNull String apiKey) throws UnlCoreException {
@@ -540,22 +502,26 @@ public class UnlCore {
         } else if (location.matches(COORDINATES_REGEX)) {
             type = "coordinates";
         } else {
-            throw new IllegalArgumentException("Could not interpret your input, " + location + ".Expected a locationId or lat,lon coordinates.");
+            throw new IllegalArgumentException("Could not interpret your input, " + location + ". Expected a locationId or lat, lon coordinates.");
         }
 
-        String url = "https://map.unl.global/api/v1/location/" + type + "/" + location;
-        String response = callEndpoint(url, apiKey);
+        String url = BASE_URL + type + "/" + location;
+        String response = LocationService.callEndpoint(url, apiKey);
         Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new LocationDeserializer()).create();
 
         return gson.fromJson(response, Location.class);
     }
 
     /**
-     * @param words   the words representing the point for which you would like the coordinates.
-     * @param apiKey  the UNL API key used to access the location APIs.
+     * Returns the location object, which encapsulates the coordinates, elevation, bounds, geohash and words,
+     * corresponding to the words string. It requires the api key used to access
+     * the location APIs.
+     *
+     * @param words  the words representing the point for which you would like the coordinates.
+     * @param apiKey the UNL API key used to access the location APIs.
      * @return an instance of Location class, containing the coordinates, elevation, bounds, geohash and words.
      * @throws IllegalArgumentException if the api key string is empty.
-     * @throws UnlCoreException if the call to location APIs is unsuccessful.
+     * @throws UnlCoreException         if the call to location APIs is unsuccessful.
      */
     @Nullable
     public Location words(@NotNull String words, @Nullable String apiKey) throws UnlCoreException {
@@ -563,8 +529,8 @@ public class UnlCore {
             throw new IllegalArgumentException("API key not set");
         }
 
-        String url = "https://map.unl.global/api/v1/location/words/" + words;
-        String response = callEndpoint(url, apiKey);
+        String url = BASE_URL + WORDS_ENDPOINT + words;
+        String response = LocationService.callEndpoint(url, apiKey);
         Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new LocationDeserializer()).create();
 
         return gson.fromJson(response, Location.class);
