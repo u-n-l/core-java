@@ -497,16 +497,16 @@ public class UnlCore {
             throw new IllegalArgumentException("API key not set");
         }
 
-        String type;
+        String endpoint;
         if (location.matches(LOCATION_ID_REGEX)) {
-            type = GEOHASH_ENDPOINT;
+            endpoint = GEOHASH_ENDPOINT;
         } else if (location.matches(COORDINATES_REGEX)) {
-            type = COORDINATES_ENDPOINT;
+            endpoint = COORDINATES_ENDPOINT;
         } else {
             throw new IllegalArgumentException("Could not interpret your input, " + location + ". Expected a locationId or lat, lon coordinates.");
         }
 
-        String url = BASE_URL + type + location;
+        String url = BASE_URL + endpoint + location;
         String response = LocationService.callEndpoint(url, apiKey);
         Gson gson = new GsonBuilder().registerTypeAdapter(Location.class, new LocationDeserializer()).create();
 

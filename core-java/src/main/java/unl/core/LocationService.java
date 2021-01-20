@@ -11,8 +11,8 @@ import java.net.URL;
 
 public class LocationService {
     private static final String GET_REQUEST_METHOD = "GET";
-    private static final String AUTHORIZATION_REQUEST_PROPERTY = "Authorization";
-    private static final String BEARER_REQUEST_PROPERTY = "Bearer";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_AUTHENTICATION = "Bearer";
 
     @Nullable
     public static String callEndpoint(@NotNull String endpoint, @NotNull String apiKey) throws UnlCoreException {
@@ -23,7 +23,7 @@ public class LocationService {
             connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod(GET_REQUEST_METHOD);
-            connection.setRequestProperty(AUTHORIZATION_REQUEST_PROPERTY, BEARER_REQUEST_PROPERTY + apiKey);
+            connection.setRequestProperty(AUTHORIZATION_HEADER, BEARER_AUTHENTICATION + apiKey);
             connection.connect();
 
             int status = connection.getResponseCode();
