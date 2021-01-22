@@ -27,4 +27,11 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub u-n-l Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/u-n-l/core-java</url>
+        </repository>
+    </distributionManagement>
 </project>
