@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UnlCore {
+public final class UnlCore {
     public final static int DEFAULT_PRECISION = 9;
     public final static Elevation DEFAULT_ELEVATION = new Elevation(0, "floor");
     private final static String BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -23,20 +23,7 @@ public class UnlCore {
     private final static String GEOHASH_ENDPOINT = "geohash/";
     private final static String COORDINATES_ENDPOINT = "coordinates/";
 
-    /**
-     * The unique instance of the UnlCore class.
-     */
-    private static UnlCore instance;
-
-    /**
-     * @return the unique instance of the UnlCore class.
-     */
-    @NotNull
-    public synchronized static UnlCore getInstance() {
-        if (instance == null) {
-            instance = new UnlCore();
-        }
-        return instance;
+    private UnlCore() {
     }
 
     /**
@@ -52,7 +39,7 @@ public class UnlCore {
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7, new Elevation(9, "floor")); // => 'u120fxw@9'
      */
     @NotNull
-    public String encode(double lat, double lon, int precision, @NotNull Elevation elevation) {
+    public static String encode(double lat, double lon, int precision, @NotNull Elevation elevation) {
         if (Double.isNaN(lat) || Double.isNaN(lon) || Double.isNaN(precision)) {
             throw new IllegalArgumentException("Invalid coordinates or precision");
         }
@@ -121,7 +108,7 @@ public class UnlCore {
      * @example String locationId = var locationId = UnlCore.getInstance().encode(52.205, 0.119, new Elevation(2, "floor")); // => 'u120fxw@2'
      */
     @NotNull
-    public String encode(double lat, double lon, int precision) {
+    public static String encode(double lat, double lon, int precision) {
         return encode(lat, lon, precision, DEFAULT_ELEVATION);
     }
 
@@ -137,7 +124,7 @@ public class UnlCore {
      * @example String locationId = UnlCore.getInstance().encode(52.205, 0.119, 7); // => 'u120fxw'
      */
     @NotNull
-    public String encode(double lat, double lon, @NotNull Elevation elevation) {
+    public static String encode(double lat, double lon, @NotNull Elevation elevation) {
         // refine locationId until it matches precision of supplied lat/lon
         for (int p = 1; p <= DEFAULT_PRECISION; p++) {
             String hash = encode(lat, lon, p);
@@ -159,7 +146,7 @@ public class UnlCore {
      * @example String locationId = UnlCore.getInstance().encode(57.64, 10.41); // => 'u4pruvh36'
      */
     @NotNull
-    public String encode(double lat, double lon) {
+    public static String encode(double lat, double lon) {
         return encode(lat, lon, DEFAULT_ELEVATION);
     }
 
@@ -175,7 +162,7 @@ public class UnlCore {
      * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(87, "heightincm")))
      */
     @NotNull
-    public PointWithElevation decode(@NotNull String locationId) {
+    public static PointWithElevation decode(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
         BoundsWithElevation boundsWithElevation = bounds(locationIdWithElevation.getLocationId());
         Bounds bounds = boundsWithElevation.getBounds();
@@ -205,7 +192,7 @@ public class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public String appendElevation(@NotNull String locationIdWithoutElevation, @NotNull Elevation elevation) {
+    public static String appendElevation(@NotNull String locationIdWithoutElevation, @NotNull Elevation elevation) {
         if (locationIdWithoutElevation.length() < 0) {
             throw new IllegalArgumentException("Invalid locationId");
         }
@@ -231,7 +218,7 @@ public class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public LocationIdWithElevation excludeElevation(@NotNull String locationIdWithElevation) {
+    public static LocationIdWithElevation excludeElevation(@NotNull String locationIdWithElevation) {
         if (locationIdWithElevation.length() == 0) {
             throw new IllegalArgumentException("Invalid locationId");
         }
@@ -267,7 +254,7 @@ public class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public BoundsWithElevation bounds(@NotNull String locationId) {
+    public static BoundsWithElevation bounds(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
         String locationIdWithoutElevation = locationIdWithElevation.getLocationId();
 
@@ -323,7 +310,7 @@ public class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public String adjacent(@NotNull String locationId, @NotNull String direction) {
+    public static String adjacent(@NotNull String locationId, @NotNull String direction) {
         final String DIRECTIONS_STRING = "nsew";
         // based on github.com/davetroy/geohash-js
         LocationIdWithElevation locationIdWithElevation = excludeElevation((locationId));
@@ -397,7 +384,7 @@ public class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public Neighbour neighbour(@NotNull String locationId) {
+    public static Neighbour neighbour(@NotNull String locationId) {
         return new Neighbour(
                 adjacent(locationId, "n"),
                 adjacent(adjacent(locationId, "n"), "e"),
@@ -420,7 +407,7 @@ public class UnlCore {
      * @return a list of double[][] representing the grid lines.
      */
     @NotNull
-    public List<double[][]> gridLines(@NotNull Bounds bounds, int precision) {
+    public static List<double[][]> gridLines(@NotNull Bounds bounds, int precision) {
         List<double[][]> lines = new ArrayList<>();
 
         double lonMin = bounds.getSw().getLon();
@@ -476,7 +463,7 @@ public class UnlCore {
      * @return a list of double[][] representing the grid lines.
      */
     @NotNull
-    public List<double[][]> gridLines(@NotNull Bounds bounds) {
+    public static List<double[][]> gridLines(@NotNull Bounds bounds) {
         return gridLines(bounds, DEFAULT_PRECISION);
     }
 
@@ -492,7 +479,7 @@ public class UnlCore {
      * @throws UnlCoreException         if the call to location endpoint is unsuccessful.
      */
     @Nullable
-    public Location toWords(@NotNull String location, @NotNull String apiKey) throws UnlCoreException {
+    public static Location toWords(@NotNull String location, @NotNull String apiKey) throws UnlCoreException {
         if (apiKey.length() == 0) {
             throw new IllegalArgumentException("API key not set");
         }
@@ -525,7 +512,7 @@ public class UnlCore {
      * @throws UnlCoreException         if the call to location APIs is unsuccessful.
      */
     @Nullable
-    public Location words(@NotNull String words, @Nullable String apiKey) throws UnlCoreException {
+    public static Location words(@NotNull String words, @Nullable String apiKey) throws UnlCoreException {
         if (apiKey == null || apiKey.length() == 0) {
             throw new IllegalArgumentException("API key not set");
         }

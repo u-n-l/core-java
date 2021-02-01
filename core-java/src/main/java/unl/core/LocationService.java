@@ -9,7 +9,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class LocationService {
+public final class LocationService {
+    private LocationService() {
+    }
+
     private static final String GET_REQUEST_METHOD = "GET";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_AUTHENTICATION = "Bearer";
