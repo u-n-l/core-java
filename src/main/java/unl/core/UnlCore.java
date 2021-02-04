@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public final class UnlCore {
     public final static int DEFAULT_PRECISION = 9;
     public final static Elevation DEFAULT_ELEVATION = new Elevation(0, "floor");
@@ -157,15 +156,14 @@ public final class UnlCore {
      * @param locationId the locationId string to be converted to latitude/longitude.
      * @return an instance of PointWithElevation, containing: center of locationId, elevation info and SW/NE latitude/longitude bounds of the locationId.
      * @throws IllegalArgumentException if the locationId is invalid.
-     * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(0, "floor")))
-     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(3, "floor")))
-     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(87, "heightincm")))
+     * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
+     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
+     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
      */
     @NotNull
     public static PointWithElevation decode(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
-        BoundsWithElevation boundsWithElevation = bounds(locationIdWithElevation.getLocationId());
-        Bounds bounds = boundsWithElevation.getBounds();
+        Bounds bounds = bounds(locationIdWithElevation.getLocationId());
 
         double latMin = bounds.getS(), lonMin = bounds.getW();
         double latMax = bounds.getN(), lonMax = bounds.getE();
@@ -179,7 +177,7 @@ public final class UnlCore {
         lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10)), BigDecimal.ROUND_HALF_DOWN).doubleValue();
 
         Point point = new Point(lat, lon);
-        return new PointWithElevation(point, locationIdWithElevation.getElevation(), boundsWithElevation);
+        return new PointWithElevation(point, locationIdWithElevation.getElevation(), bounds);
     }
 
     /**
@@ -250,11 +248,11 @@ public final class UnlCore {
      * Returns SW/NE latitude/longitude bounds of specified locationId cell.
      *
      * @param locationId the cell that bounds are required of.
-     * @return an instance of BoundsWithElevation having the sw/ne latitude/longitude bounds of specified locationId cell together with the elevation information.
+     * @return an instance of Bounds, containing the sw/ne latitude/longitude bounds of specified locationId cell.
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public static BoundsWithElevation bounds(@NotNull String locationId) {
+    public static Bounds bounds(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
         String locationIdWithoutElevation = locationIdWithElevation.getLocationId();
 
@@ -295,10 +293,7 @@ public final class UnlCore {
             }
         }
 
-        Bounds bounds = new Bounds(latMax, lonMax, latMin, lonMin);
-        Elevation elevation = new Elevation(locationIdWithElevation.getElevation().getElevation(), locationIdWithElevation.getElevation().getElevationType());
-
-        return new BoundsWithElevation(bounds, elevation);
+        return new Bounds(latMax, lonMax, latMin, lonMin);
     }
 
     /**
@@ -423,13 +418,13 @@ public final class UnlCore {
                 precision,
                 DEFAULT_ELEVATION
         );
-        BoundsWithElevation swCellBounds = bounds(swCellLocationId);
+        Bounds swCellBounds = bounds(swCellLocationId);
 
-        double latStart = swCellBounds.getBounds().getN();
-        double lonStart = swCellBounds.getBounds().getE();
+        double latStart = swCellBounds.getN();
+        double lonStart = swCellBounds.getE();
 
         String currentCellLocationId = swCellLocationId;
-        BoundsWithElevation currentCellBounds = swCellBounds;
+        Bounds currentCellBounds = swCellBounds;
         double currentCellNorthLatitude = latStart;
 
         while (currentCellNorthLatitude <= latMax) {
@@ -437,7 +432,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "n");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellNorthLatitude = currentCellBounds.getBounds().getN();
+            currentCellNorthLatitude = currentCellBounds.getN();
         }
 
         currentCellLocationId = swCellLocationId;
@@ -448,7 +443,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "e");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellEastLongitude = currentCellBounds.getBounds().getE();
+            currentCellEastLongitude = currentCellBounds.getE();
         }
 
         return lines;
