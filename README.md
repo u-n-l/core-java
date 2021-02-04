@@ -2,9 +2,7 @@
 
 This library can be used to convert a UNL locationId to/from a latitude/longitude point. It also contains helper functions like retrieving the bounds of a UNL cell or the UNL grid lines for a given boundingbox (these can be used to draw a UNL cell or a UNL grid).
 
-## Installation 
-
-### Maven project
+## Maven project
 
 To add the package as a dependecy to a Maven project the following steps need to be done: 
 
@@ -25,7 +23,7 @@ mvn install
 
 For more information, see the official guide: [Configuring Gradle for use with GitHub Packages](https://docs.github.com/en/packages/guides/configuring-apache-maven-for-use-with-github-packages).
 
-### Gradle project
+## Gradle project
 
 To add the package as a dependency to your gradle project you must:
 
