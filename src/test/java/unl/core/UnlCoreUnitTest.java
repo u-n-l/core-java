@@ -148,24 +148,24 @@ public class UnlCoreUnitTest {
     @Test
     public void neighbourTest() {
         /* fetches neighbours */
-        Assert.assertEquals(UnlCore.neighbour("ezzz"),
-                new Neighbour("gbpb", "u000", "spbp", "spbn", "ezzy", "ezzw", "ezzx", "gbp8"));
+        Assert.assertEquals(UnlCore.neighbours("ezzz"),
+                new Neighbours("gbpb", "u000", "spbp", "spbn", "ezzy", "ezzw", "ezzx", "gbp8"));
 
         /* fetches neighbours 5th floor */
-        Assert.assertEquals(UnlCore.neighbour("ezzz@5"),
-                new Neighbour("gbpb@5", "u000@5", "spbp@5", "spbn@5", "ezzy@5", "ezzw@5", "ezzx@5", "gbp8@5"));
+        Assert.assertEquals(UnlCore.neighbours("ezzz@5"),
+                new Neighbours("gbpb@5", "u000@5", "spbp@5", "spbn@5", "ezzy@5", "ezzw@5", "ezzx@5", "gbp8@5"));
 
         /* fetches neighbours -2 floor */
-        Assert.assertEquals(UnlCore.neighbour("ezzz@-2"),
-                new Neighbour("gbpb@-2", "u000@-2", "spbp@-2", "spbn@-2", "ezzy@-2", "ezzw@-2", "ezzx@-2", "gbp8@-2"));
+        Assert.assertEquals(UnlCore.neighbours("ezzz@-2"),
+                new Neighbours("gbpb@-2", "u000@-2", "spbp@-2", "spbn@-2", "ezzy@-2", "ezzw@-2", "ezzx@-2", "gbp8@-2"));
 
         /* fetches neighbours above 87cm */
-        Assert.assertEquals(UnlCore.neighbour("ezzz#87"),
-                new Neighbour("gbpb#87", "u000#87", "spbp#87", "spbn#87", "ezzy#87", "ezzw#87", "ezzx#87", "gbp8#87"));
+        Assert.assertEquals(UnlCore.neighbours("ezzz#87"),
+                new Neighbours("gbpb#87", "u000#87", "spbp#87", "spbn#87", "ezzy#87", "ezzw#87", "ezzx#87", "gbp8#87"));
 
         /* fetches neighbours below 5cm */
-        Assert.assertEquals(UnlCore.neighbour("ezzz#-5"),
-                new Neighbour("gbpb#-5", "u000#-5", "spbp#-5", "spbn#-5", "ezzy#-5", "ezzw#-5", "ezzx#-5", "gbp8#-5"));
+        Assert.assertEquals(UnlCore.neighbours("ezzz#-5"),
+                new Neighbours("gbpb#-5", "u000#-5", "spbp#-5", "spbn#-5", "ezzy#-5", "ezzw#-5", "ezzx#-5", "gbp8#-5"));
     }
 
     @Test

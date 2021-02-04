@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class Neighbour {
+public class Neighbours {
     @NotNull
     private String n;
     @NotNull
@@ -23,7 +23,7 @@ public class Neighbour {
     @NotNull
     private String nw;
 
-    public Neighbour(
+    public Neighbours(
             @NotNull String n,
             @NotNull String ne,
             @NotNull String e,
@@ -86,14 +86,14 @@ public class Neighbour {
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Neighbour neighbour = (Neighbour) o;
-        return Objects.equals(n, neighbour.n) &&
-                Objects.equals(ne, neighbour.ne) &&
-                Objects.equals(e, neighbour.e) &&
-                Objects.equals(se, neighbour.se) &&
-                Objects.equals(s, neighbour.s) &&
-                Objects.equals(sw, neighbour.sw) &&
-                Objects.equals(w, neighbour.w) &&
-                Objects.equals(nw, neighbour.nw);
+        Neighbours neighbours = (Neighbours) o;
+        return Objects.equals(n, neighbours.n) &&
+                Objects.equals(ne, neighbours.ne) &&
+                Objects.equals(e, neighbours.e) &&
+                Objects.equals(se, neighbours.se) &&
+                Objects.equals(s, neighbours.s) &&
+                Objects.equals(sw, neighbours.sw) &&
+                Objects.equals(w, neighbours.w) &&
+                Objects.equals(nw, neighbours.nw);
     }
 }
