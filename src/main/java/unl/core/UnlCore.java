@@ -154,7 +154,7 @@ public final class UnlCore {
      * to reasonable precision).
      *
      * @param locationId the locationId string to be converted to latitude/longitude.
-     * @return an instance of PointWithElevation, containing: center of locationId, elevation info and SW/NE latitude/longitude bounds of the locationId.
+     * @return an instance of PointWithElevation, containing: center of locationId, elevation info and n, e, s, w bounds of the locationId.
      * @throws IllegalArgumentException if the locationId is invalid.
      * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
      * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
@@ -245,10 +245,10 @@ public final class UnlCore {
     }
 
     /**
-     * Returns SW/NE latitude/longitude bounds of specified locationId cell.
+     * Returns n, e, s, w bounds of specified locationId cell.
      *
      * @param locationId the cell that bounds are required of.
-     * @return an instance of Bounds, containing the sw/ne latitude/longitude bounds of specified locationId cell.
+     * @return an instance of Bounds, containing the n, e, s, w bounds of specified locationId cell.
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
@@ -394,7 +394,7 @@ public final class UnlCore {
 
     /**
      * Returns the vertical and horizontal lines that can be used to draw a UNL grid in the specified
-     * SW/NE latitude/longitude bounds and precision. Each line is represented by an array of two
+     * n, w, s, e  bounds and precision. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
      * @param bounds    the bound within to return the grid lines.
@@ -451,7 +451,7 @@ public final class UnlCore {
 
     /**
      * Returns the vertical and horizontal lines that can be used to draw a UNL grid in the specified
-     * SW/NE latitude/longitude bounds, using the default precision: 9. Each line is represented by an array of two
+     * n, e, s, w bounds, using the default precision: 9. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
      * @param bounds the bound within to return the grid lines.
