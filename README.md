@@ -501,10 +501,8 @@ the location APIs.
 ```java
 public static Location words(@NotNull String words, @Nullable String apiKey) throws UnlCoreException
 ```
-In case of _words_ and _toWords_ methods, a UnlCoreException will be thrown if the request to the locationAPI is not sucessful. In order to generate the apiKey and access the location APIs, you need to create a developer account on [map.unl.global](https://map.unl.global/account).
-Please contact us if you need further help. 
-You can read more on autehntication and api keys at: https://developer.unl.global/docs/authentication.
-
+In case of _words_ and _toWords_ methods, a UnlCoreException will be thrown if the request to the locationAPI is not sucessful. In order to generate the apiKey and access the location APIs, you need to create a developer account on [map.unl.global](https://unl.global/developers/).
+You can read more on authentication and api keys at: https://developer.unl.global/docs/authentication.
 
 ## Contributing
 Pull requests are welcome.
