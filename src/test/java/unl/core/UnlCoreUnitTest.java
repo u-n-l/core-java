@@ -29,17 +29,14 @@ public class UnlCoreUnitTest {
         /* decodes Jutland */
         Assert.assertEquals(UnlCore.decode("u4pruy"),
                 new PointWithElevation(new Point(57.648, 10.41), DEFAULT_ELEVATION, new BoundsWithElevation(new Bounds(
-                        new Point(57.645263671875, 10.404052734375),
-                        new Point(57.6507568359375, 10.4150390625)
+                        57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                 ), DEFAULT_ELEVATION)));
 
         /* decodes Justland floor 3 */
         Assert.assertEquals(UnlCore.decode("u4pruy@3"),
                 new PointWithElevation(new Point(57.648, 10.41),
                         new Elevation(3, "floor"),
-                        new BoundsWithElevation(new Bounds(
-                                new Point(57.645263671875, 10.404052734375),
-                                new Point(57.6507568359375, 10.4150390625)
+                        new BoundsWithElevation(new Bounds(57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Justland floor 0 */
@@ -47,8 +44,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(57.648, 10.41),
                         DEFAULT_ELEVATION,
                         new BoundsWithElevation(new Bounds(
-                                new Point(57.645263671875, 10.404052734375),
-                                new Point(57.6507568359375, 10.4150390625)
+                                57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Justland floor -2 */
@@ -56,8 +52,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(57.648, 10.41),
                         new Elevation(-2, "floor"),
                         new BoundsWithElevation(new Bounds(
-                                new Point(57.645263671875, 10.404052734375),
-                                new Point(57.6507568359375, 10.4150390625)
+                                57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Jutland heightincm 87 */
@@ -65,8 +60,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(57.648, 10.41),
                         new Elevation(87, "heightincm"),
                         new BoundsWithElevation(new Bounds(
-                                new Point(57.645263671875, 10.404052734375),
-                                new Point(57.6507568359375, 10.4150390625)
+                                57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Jutland heightincm 0 */
@@ -74,8 +68,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(57.648, 10.41),
                         new Elevation(0, "heightincm"),
                         new BoundsWithElevation(new Bounds(
-                                new Point(57.645263671875, 10.404052734375),
-                                new Point(57.6507568359375, 10.4150390625)
+                                57.6507568359375, 10.4150390625, 57.645263671875, 10.404052734375
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Curitiba */
@@ -83,8 +76,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(-25.38262, -49.26561),
                         DEFAULT_ELEVATION,
                         new BoundsWithElevation(new Bounds(
-                                new Point(-25.382709503173828, -49.265785217285156),
-                                new Point(-25.382537841796875, -49.26544189453125)
+                                -25.382537841796875, -49.26544189453125, -25.382709503173828, -49.265785217285156
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Curitiba floor 5 */
@@ -92,8 +84,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(-25.38262, -49.26561),
                         new Elevation(5, "floor"),
                         new BoundsWithElevation(new Bounds(
-                                new Point(-25.382709503173828, -49.265785217285156),
-                                new Point(-25.382537841796875, -49.26544189453125)
+                                -25.382537841796875, -49.26544189453125, -25.382709503173828, -49.265785217285156
                         ), DEFAULT_ELEVATION)));
 
         /* decodes Curitiba heightincm 90 */
@@ -101,8 +92,7 @@ public class UnlCoreUnitTest {
                 new PointWithElevation(new Point(-25.38262, -49.26561),
                         new Elevation(90, "heightincm"),
                         new BoundsWithElevation(new Bounds(
-                                new Point(-25.382709503173828, -49.265785217285156),
-                                new Point(-25.382537841796875, -49.26544189453125)
+                                -25.382537841796875, -49.26544189453125, -25.382709503173828, -49.265785217285156
                         ), DEFAULT_ELEVATION)));
     }
 
@@ -173,24 +163,21 @@ public class UnlCoreUnitTest {
         /* retrieves grid lines with precision 9 */
         Assert.assertEquals(UnlCore.gridLines(
                 new Bounds(
-                        new Point(46.77210936378606, 23.595436614661565),
-                        new Point(46.77227194246396, 23.59560827603795)
+                        46.77227194246396, 23.59560827603795, 46.77210936378606, 23.595436614661565
                 ), 9
         ).size(), 7);
 
         /* retrieves grid lines with no precision specified (default 9) */
         Assert.assertEquals(UnlCore.gridLines(
                 new Bounds(
-                        new Point(46.77210936378606, 23.595436614661565),
-                        new Point(46.77227194246396, 23.59560827603795)
+                        46.77227194246396, 23.59560827603795, 46.77210936378606, 23.595436614661565
                 )
         ).size(), 7);
 
         /* retrieves grid lines with precision 12 */
         Assert.assertEquals(UnlCore.gridLines(
                 new Bounds(
-                        new Point(46.77210936378606, 23.595436614661565),
-                        new Point(46.77227194246396, 23.59560827603795)
+                        46.77227194246396, 23.59560827603795, 46.77210936378606, 23.595436614661565
                 ), 12
         ).size(), 1481);
     }

@@ -167,8 +167,8 @@ public final class UnlCore {
         BoundsWithElevation boundsWithElevation = bounds(locationIdWithElevation.getLocationId());
         Bounds bounds = boundsWithElevation.getBounds();
 
-        double latMin = bounds.getSw().getLat(), lonMin = bounds.getSw().getLon();
-        double latMax = bounds.getNe().getLat(), lonMax = bounds.getNe().getLon();
+        double latMin = bounds.getS(), lonMin = bounds.getW();
+        double latMax = bounds.getN(), lonMax = bounds.getE();
 
         // cell centre
         double lat = (latMin + latMax) / 2;
@@ -295,7 +295,7 @@ public final class UnlCore {
             }
         }
 
-        Bounds bounds = new Bounds(new Point(latMin, lonMin), new Point(latMax, lonMax));
+        Bounds bounds = new Bounds(latMax, lonMax, latMin, lonMin);
         Elevation elevation = new Elevation(locationIdWithElevation.getElevation().getElevation(), locationIdWithElevation.getElevation().getElevationType());
 
         return new BoundsWithElevation(bounds, elevation);
@@ -410,23 +410,23 @@ public final class UnlCore {
     public static List<double[][]> gridLines(@NotNull Bounds bounds, int precision) {
         List<double[][]> lines = new ArrayList<>();
 
-        double lonMin = bounds.getSw().getLon();
-        double lonMax = bounds.getNe().getLon();
+        double lonMin = bounds.getW();
+        double lonMax = bounds.getE();
 
-        double latMin = bounds.getSw().getLat();
-        double latMax = bounds.getNe().getLat();
+        double latMin = bounds.getS();
+        double latMax = bounds.getN();
 
 
         String swCellLocationId = encode(
-                bounds.getSw().getLat(),
-                bounds.getSw().getLon(),
+                bounds.getS(),
+                bounds.getW(),
                 precision,
                 DEFAULT_ELEVATION
         );
         BoundsWithElevation swCellBounds = bounds(swCellLocationId);
 
-        double latStart = swCellBounds.getBounds().getNe().getLat();
-        double lonStart = swCellBounds.getBounds().getNe().getLon();
+        double latStart = swCellBounds.getBounds().getN();
+        double lonStart = swCellBounds.getBounds().getE();
 
         String currentCellLocationId = swCellLocationId;
         BoundsWithElevation currentCellBounds = swCellBounds;
@@ -437,7 +437,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "n");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellNorthLatitude = currentCellBounds.getBounds().getNe().getLat();
+            currentCellNorthLatitude = currentCellBounds.getBounds().getN();
         }
 
         currentCellLocationId = swCellLocationId;
@@ -448,7 +448,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "e");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellEastLongitude = currentCellBounds.getBounds().getNe().getLon();
+            currentCellEastLongitude = currentCellBounds.getBounds().getE();
         }
 
         return lines;

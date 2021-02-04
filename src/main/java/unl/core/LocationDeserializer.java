@@ -24,15 +24,13 @@ public class LocationDeserializer implements JsonDeserializer<Location> {
                 locationJsonObject.get("elevation").getAsInt(),
                 locationJsonObject.get("elevationType").getAsString()
         );
-        Point sw = new Point(
-                boundsJsonObject.getAsJsonObject("sw").get("lat").getAsDouble(),
-                boundsJsonObject.getAsJsonObject("sw").get("lon").getAsDouble()
-        );
-        Point ne = new Point(
-                boundsJsonObject.getAsJsonObject("ne").get("lat").getAsDouble(),
-                boundsJsonObject.getAsJsonObject("ne").get("lon").getAsDouble()
-        );
-        Bounds bounds = new Bounds(sw, ne);
+
+        double n = boundsJsonObject.getAsJsonObject("ne").get("lat").getAsDouble();
+        double e = boundsJsonObject.getAsJsonObject("ne").get("lon").getAsDouble();
+        double s = boundsJsonObject.getAsJsonObject("sw").get("lat").getAsDouble();
+        double w = boundsJsonObject.getAsJsonObject("sw").get("lon").getAsDouble();
+
+        Bounds bounds = new Bounds(n, e, s, w);
 
         return new Location(
                 point,
