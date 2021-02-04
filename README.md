@@ -2,9 +2,7 @@
 
 This library can be used to convert a UNL locationId to/from a latitude/longitude point. It also contains helper functions like retrieving the bounds of a UNL cell or the UNL grid lines for a given boundingbox (these can be used to draw a UNL cell or a UNL grid).
 
-## Installation
-
-You must use a personal access token with the appropriate scopes to publish and install packages in GitHub Packages. You can generate a token in your [account settings page](https://github.com/settings/tokens). 
+## Installation 
 
 ### Maven project
 
