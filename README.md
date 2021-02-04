@@ -11,51 +11,8 @@ You must use a personal access token with the appropriate scopes to publish and 
 To add the package as a dependecy to a Maven project the following steps need to be done: 
 
 1. Authenticate to GithubPackages 
-Add the dependency to your pom.xml file:
 
-You can authenticate to GitHub Packages with Apache Maven by editing your settings.xml file to include your personal access token. Replace USERNAME with your GitHub username and TOKEN with your personall access token:
-
-```xml
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-
-  <activeProfiles>
-    <activeProfile>github</activeProfile>
-  </activeProfiles>
-
-  <profiles>
-    <profile>
-      <id>github</id>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <url>https://repo1.maven.org/maven2</url>
-          <releases><enabled>true</enabled></releases>
-          <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-          <id>github</id>
-          <name>GitHub u-n-l Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/u-n-l/core-java</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-
-  <servers>
-    <server>
-      <id>github</id>
-      <username>USERNAME</username>
-      <password>TOKEN</password>
-    </server>
-  </servers>
-</settings>
-
-```
-
-2. Add the following dependecy tag to the dependencies element of your project pom.xml file:
+1. Add the following dependecy to the dependencies element of your project pom.xml file:
 
 ```xml
 <dependency>
@@ -65,7 +22,7 @@ You can authenticate to GitHub Packages with Apache Maven by editing your settin
 </dependency>
 ```
 
-3. Install the package by running the following command from the same level with your pom.xml file:
+2. Install the package by running the following command from the same level with your pom.xml file:
 ```bash
 mvn install
 ```
@@ -75,17 +32,13 @@ For more information, see the official guide: [Configuring Gradle for use with G
 ### Gradle project
 
 To add the package as a dependency to your gradle project you must:
-1. Authenticate to GitHubPackages. Replace USERNAME with your GitHub username and TOKEN with your personal access token. 
 
+1. Add GithubPackages in the repositories section:
 ```
 repositories {
       maven {
           name = "GitHubPackages"
-          url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
-          credentials {
-              username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-              password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-          }
+          url = uri("https://maven.pkg.github.com/u-n-l/core-java")
       }
   }
 ```
@@ -550,7 +503,10 @@ the location APIs.
 ```java
 public static Location words(@NotNull String words, @Nullable String apiKey) throws UnlCoreException
 ```
-In case of _words_ and _toWords_ methods, a UnlCoreException will be thrown if the request to the locationAPI is not sucessful. 
+In case of _words_ and _toWords_ methods, a UnlCoreException will be thrown if the request to the locationAPI is not sucessful. In order to generate the apiKey and access the location APIs, you need to create a developer account on [map.unl.global](https://map.unl.global/account).
+Please contact us if you need further help. 
+You can read more on autehntication and api keys at: https://developer.unl.global/docs/authentication.
+
 
 ## Contributing
 Pull requests are welcome.
