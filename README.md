@@ -87,13 +87,23 @@ public class Point {
 ### Bounds 
 
 ```java
-public class Bounds {@NotNull
-  private Point sw;@NotNull
-  private Point ne;
+public Bounds(double n, double e, double s, double w) {
+  this.n = n;
+  this.e = e;
+  this.s = s;
+  this.w = w;
 
-  public Bounds(@NotNull Point sw, @NotNull Point ne) {
-    this.sw = sw;
-    this.ne = ne;
+  public double getN() {
+    return n;
+  }
+  public double getS() {
+    return s;
+  }
+  public double getE() {
+    return e;
+  }
+  public double getW() {
+    return w;
   }
 }
 ```
@@ -112,35 +122,21 @@ public class Elevation {
 }
 ```
 
-### BoundsWithElevation 
-
-```java
-public class BoundsWithElevation {@NotNull
-  private Bounds bounds;@NotNull
-  private Elevation elevation;
-
-  public BoundsWithElevation(@NotNull Bounds bounds, @NotNull Elevation elevation) {
-    this.bounds = bounds;
-    this.elevation = elevation;
-  }
-}
-```
-
 ### PointWithElevation
 
 ```java
 public class PointWithElevation {@NotNull
   public Point coordinates;@NotNull
   public Elevation elevation;@NotNull
-  public BoundsWithElevation bounds;
+  public Bounds bounds;
 
-  public PointWithElevation(@NotNull Point coordinates, @NotNull Elevation elevation, @NotNull BoundsWithElevation bounds) {
+  public PointWithElevation(@NotNull Point coordinates, @NotNull Elevation elevation, @NotNull Bounds bounds) {
     this.coordinates = coordinates;
     this.elevation = elevation;
     this.bounds = bounds;
   }
 
-  public PointWithElevation(@NotNull Point coordinates, @NotNull BoundsWithElevation bounds) {
+  public PointWithElevation(@NotNull Point coordinates, @NotNull Bounds bounds) {
     this(coordinates, UnlCore.DEFAULT_ELEVATION, bounds);
   }
 }
@@ -318,29 +314,19 @@ Returns a PointWithElevation object. Below is the json representation of the ret
       "elevationType":"floor"
    },
    "bounds":{
-      "bounds":{
-         "sw":{
-            "lat":52.37684726715088,
-            "lon":4.900631904602051
-         },
-         "ne":{
-            "lat":52.37689018249512,
-            "lon":4.900674819946289
-         }
-      },
-      "elevation":{
-         "elevation":0,
-         "elevationType":"floor"
-      }
+      "n":52.37689018249512,
+      "e":4.900674819946289,
+      "s":52.37684726715088,
+      "w":4.900631904602051
    }
 }
 ```
 
 ### Bounds
-Returns SW/NE latitude/longitude bounds of specified locationId cell, along with the elevation information.
+Returns n, e, s, w latitude/longitude bounds of specified locationId cell, along with the elevation information.
 
 ```java
-public static BoundsWithElevation bounds(@NotNull String locationId);
+public static Bounds bounds(@NotNull String locationId);
 ```
 
 Example:
@@ -348,30 +334,20 @@ Example:
 UnlCore.bounds("u173zwbt3");
 ```
 
-Returns a BoundsWithElevation object. Below is the json representation of the returned object:
+Returns a Bounds object. Below is the json representation of the returned object:
 
 ```java
 {
-   "bounds":{
-      "sw":{
-         "lat":52.37684726715088,
-         "lon":4.900631904602051
-      },
-      "ne":{
-         "lat":52.37689018249512,
-         "lon":4.900674819946289
-      }
-   },
-   "elevation":{
-      "elevation":0,
-      "elevationType":"floor"
-   }
+   "n": 52.37689018249512,
+   "e": 4.900674819946289,
+   "s": 52.37684726715088,
+   "w": 4.900631904602051
 }
 ``` 
 
 ## gridLines
 Returns the vertical and horizontal lines that can be used to draw a UNL grid in the specified
-SW/NE latitude/longitude bounds and precision. Each line is represented by an array of two
+n, e, s, w latitude/longitude bounds and precision. Each line is represented by an array of two
 coordinates in the format: [[startLon, startLat], [endLon, endLat]].
 
 ```java
@@ -383,9 +359,7 @@ If the precision parameter is not passed, the default precision will be used: 9.
 Example:
 
 ```java
-Point sw = new Point(46.77210936378606, 23.595436614661565);
-Point ne = new Point(46.77227194246396, 23.59560827603795);
-Bounds bounds = new Bounds(sw, ne);
+Bounds bounds = new Bounds(46.77227194246396, 23.59560827603795, 46.77210936378606, 23.595436614661565);
 
 UnlCore.gridLines(bounds, 12);
 ```
