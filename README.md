@@ -70,6 +70,8 @@ You can authenticate to GitHub Packages with Apache Maven by editing your settin
 mvn install
 ```
 
+For more information, see the official guide: [Configuring Gradle for use with GitHub Packages](https://docs.github.com/en/packages/guides/configuring-apache-maven-for-use-with-github-packages).
+
 ### Gradle project
 
 To add the package as a dependency to your gradle project you must:
