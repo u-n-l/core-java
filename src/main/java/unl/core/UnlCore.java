@@ -343,7 +343,7 @@ public final class UnlCore {
                 directionNumber = 0;
         }
 
-        String[][] neighbour = {
+        String[][] neighbours = {
                 {"p0r21436x8zb9dcf5h7kjnmqesgutwvy", "bc01fg45238967deuvhjyznpkmstqrwx"}, //n
                 {"14365h7k9dcfesgujnmqp0r2twvyx8zb", "238967debc01fg45kmstqrwxuvhjyznp"}, //s
                 {"bc01fg45238967deuvhjyznpkmstqrwx", "p0r21436x8zb9dcf5h7kjnmqesgutwvy"}, //e
@@ -367,7 +367,7 @@ public final class UnlCore {
 
         // append letter for direction to parent
         String nextLocationId =
-                parent + BASE32.charAt(neighbour[directionNumber][type].indexOf(lastCh));
+                parent + BASE32.charAt(neighbours[directionNumber][type].indexOf(lastCh));
 
         if (elevation != 0 && !elevationType.equals("")) {
             return appendElevation(nextLocationId, locationIdWithElevation.getElevation());
@@ -384,8 +384,8 @@ public final class UnlCore {
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public static Neighbour neighbour(@NotNull String locationId) {
-        return new Neighbour(
+    public static Neighbours neighbours(@NotNull String locationId) {
+        return new Neighbours(
                 adjacent(locationId, "n"),
                 adjacent(adjacent(locationId, "n"), "e"),
                 adjacent(locationId, "e"),
