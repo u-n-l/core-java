@@ -12,7 +12,7 @@ To add the package as a dependecy to a Maven project the following steps need to
 <dependency>
   <groupId>unl</groupId>
   <artifactId>core</artifactId>
-  <version>0.0.2</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -38,7 +38,7 @@ repositories {
 ```
 2. Add the unl core package dependency to your build.gradle file:
 ```
-implementation 'unl:core:0.0.2'
+implementation 'unl:core:1.0.0'
 ```
 
 3. Add the maven plugin to your build.gradle file:
