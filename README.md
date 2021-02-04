@@ -10,8 +10,6 @@ You must use a personal access token with the appropriate scopes to publish and 
 
 To add the package as a dependecy to a Maven project the following steps need to be done: 
 
-1. Authenticate to GithubPackages 
-
 1. Add the following dependecy to the dependencies element of your project pom.xml file:
 
 ```xml
