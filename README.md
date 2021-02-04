@@ -4,9 +4,58 @@ This library can be used to convert a UNL locationId to/from a latitude/longitud
 
 ## Installation
 
+You must use a personal access token with the appropriate scopes to publish and install packages in GitHub Packages. You can generate a token in your [account settings page](https://github.com/settings/tokens). 
+
 ### Maven project
 
+To add the package as a dependecy to a Maven project the following steps need to be done: 
+
+1. Authenticate to GithubPackages 
 Add the dependency to your pom.xml file:
+
+You can authenticate to GitHub Packages with Apache Maven by editing your settings.xml file to include your personal access token. Replace USERNAME with your GitHub username and TOKEN with your personall access token:
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <repository>
+          <id>github</id>
+          <name>GitHub u-n-l Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/u-n-l/core-java</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>USERNAME</username>
+      <password>TOKEN</password>
+    </server>
+  </servers>
+</settings>
+
+```
+
+2. Add the following dependecy tag to the dependencies element of your project pom.xml file:
 
 ```xml
 <dependency>
@@ -14,9 +63,9 @@ Add the dependency to your pom.xml file:
   <artifactId>core</artifactId>
   <version>0.0.2</version>
 </dependency>
-
 ```
-Then run from the root dir of the project:
+
+3. Install the package by running the following command from the same level with your pom.xml file:
 ```bash
 mvn install
 ```
@@ -24,7 +73,7 @@ mvn install
 ### Gradle project
 
 To add the package as a dependency to your gradle project you must:
-1. Authenticate to GitHubPackages. Replace USERNAME with your GitHub username and TOKEN with your personal access token. You can generate a token in your [account settings page](https://github.com/settings/tokens). 
+1. Authenticate to GitHubPackages. Replace USERNAME with your GitHub username and TOKEN with your personal access token. 
 
 ```
 repositories {
@@ -219,6 +268,11 @@ public class Location {
 
 ## UnlCore methods
 
+You can import the UnlCore class into your file, to call any of the methods describe below:
+
+```java
+import unl.core.UnlCore;
+```
 ### encode
 
 Encodes latitude/longitude coordinates to locationId. There are multiple signatures for the encode method.
