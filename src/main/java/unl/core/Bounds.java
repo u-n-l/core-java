@@ -1,37 +1,42 @@
 package unl.core;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-
 public class Bounds {
-    @NotNull
-    private Point sw;
-    @NotNull
-    private Point ne;
+    private double n;
+    private double e;
+    private double s;
+    private double w;
 
-    public Bounds(@NotNull Point sw, @NotNull Point ne) {
-        this.sw = sw;
-        this.ne = ne;
+    public Bounds(double n, double e, double s, double w) {
+        this.n = n;
+        this.e = e;
+        this.s = s;
+        this.w = w;
     }
 
-    @NotNull
-    public Point getSw() {
-        return this.sw;
+    public double getN() {
+        return n;
     }
 
-    @NotNull
-    public Point getNe() {
-        return this.ne;
+    public double getS() {
+        return s;
+    }
+
+    public double getE() {
+        return e;
+    }
+
+    public double getW() {
+        return w;
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bounds bounds = (Bounds) o;
-        return Objects.equals(sw, bounds.sw) &&
-                Objects.equals(ne, bounds.ne);
+        return Double.compare(bounds.n, n) == 0 &&
+                Double.compare(bounds.e, e) == 0 &&
+                Double.compare(bounds.s, s) == 0 &&
+                Double.compare(bounds.w, w) == 0;
     }
 }

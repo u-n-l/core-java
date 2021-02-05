@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public final class UnlCore {
     public final static int DEFAULT_PRECISION = 9;
     public final static Elevation DEFAULT_ELEVATION = new Elevation(0, "floor");
@@ -155,20 +154,19 @@ public final class UnlCore {
      * to reasonable precision).
      *
      * @param locationId the locationId string to be converted to latitude/longitude.
-     * @return an instance of PointWithElevation, containing: center of locationId, elevation info and SW/NE latitude/longitude bounds of the locationId.
+     * @return an instance of PointWithElevation, containing: center of locationId, elevation info and n, e, s, w bounds of the locationId.
      * @throws IllegalArgumentException if the locationId is invalid.
-     * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(0, "floor")))
-     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(3, "floor")))
-     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new BoundsWithElevation(new Bounds(new Point(52.20428466796875, 0.11810302734375), new Point(52.205657958984375, 0.119476318359375)), new Elevation(87, "heightincm")))
+     * @example PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(0, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
+     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw@3'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(3, "floor"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
+     * PointWithElevation pointWithElevation = UnlCore.getInstance().decode('u120fxw#87'); // => new PointWithElevation(new Point(52.205, 0.1188), new Elevation(87, "heightincm"), new Bounds(52.205657958984375, 0.119476318359375, 52.20428466796875, 0.11810302734375));
      */
     @NotNull
     public static PointWithElevation decode(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
-        BoundsWithElevation boundsWithElevation = bounds(locationIdWithElevation.getLocationId());
-        Bounds bounds = boundsWithElevation.getBounds();
+        Bounds bounds = bounds(locationIdWithElevation.getLocationId());
 
-        double latMin = bounds.getSw().getLat(), lonMin = bounds.getSw().getLon();
-        double latMax = bounds.getNe().getLat(), lonMax = bounds.getNe().getLon();
+        double latMin = bounds.getS(), lonMin = bounds.getW();
+        double latMax = bounds.getN(), lonMax = bounds.getE();
 
         // cell centre
         double lat = (latMin + latMax) / 2;
@@ -179,7 +177,7 @@ public final class UnlCore {
         lon = new BigDecimal(lon).setScale((int) Math.floor(2 - Math.log(lonMax - lonMin) / Math.log(10)), BigDecimal.ROUND_HALF_DOWN).doubleValue();
 
         Point point = new Point(lat, lon);
-        return new PointWithElevation(point, locationIdWithElevation.getElevation(), boundsWithElevation);
+        return new PointWithElevation(point, locationIdWithElevation.getElevation(), bounds);
     }
 
     /**
@@ -247,14 +245,14 @@ public final class UnlCore {
     }
 
     /**
-     * Returns SW/NE latitude/longitude bounds of specified locationId cell.
+     * Returns n, e, s, w bounds of specified locationId cell.
      *
      * @param locationId the cell that bounds are required of.
-     * @return an instance of BoundsWithElevation having the sw/ne latitude/longitude bounds of specified locationId cell together with the elevation information.
+     * @return an instance of Bounds, containing the n, e, s, w bounds of specified locationId cell.
      * @throws IllegalArgumentException if the locationId is invalid.
      */
     @NotNull
-    public static BoundsWithElevation bounds(@NotNull String locationId) {
+    public static Bounds bounds(@NotNull String locationId) {
         LocationIdWithElevation locationIdWithElevation = excludeElevation(locationId);
         String locationIdWithoutElevation = locationIdWithElevation.getLocationId();
 
@@ -295,10 +293,7 @@ public final class UnlCore {
             }
         }
 
-        Bounds bounds = new Bounds(new Point(latMin, lonMin), new Point(latMax, lonMax));
-        Elevation elevation = new Elevation(locationIdWithElevation.getElevation().getElevation(), locationIdWithElevation.getElevation().getElevationType());
-
-        return new BoundsWithElevation(bounds, elevation);
+        return new Bounds(latMax, lonMax, latMin, lonMin);
     }
 
     /**
@@ -399,7 +394,7 @@ public final class UnlCore {
 
     /**
      * Returns the vertical and horizontal lines that can be used to draw a UNL grid in the specified
-     * SW/NE latitude/longitude bounds and precision. Each line is represented by an array of two
+     * n, w, s, e  bounds and precision. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
      * @param bounds    the bound within to return the grid lines.
@@ -410,26 +405,26 @@ public final class UnlCore {
     public static List<double[][]> gridLines(@NotNull Bounds bounds, int precision) {
         List<double[][]> lines = new ArrayList<>();
 
-        double lonMin = bounds.getSw().getLon();
-        double lonMax = bounds.getNe().getLon();
+        double lonMin = bounds.getW();
+        double lonMax = bounds.getE();
 
-        double latMin = bounds.getSw().getLat();
-        double latMax = bounds.getNe().getLat();
+        double latMin = bounds.getS();
+        double latMax = bounds.getN();
 
 
         String swCellLocationId = encode(
-                bounds.getSw().getLat(),
-                bounds.getSw().getLon(),
+                bounds.getS(),
+                bounds.getW(),
                 precision,
                 DEFAULT_ELEVATION
         );
-        BoundsWithElevation swCellBounds = bounds(swCellLocationId);
+        Bounds swCellBounds = bounds(swCellLocationId);
 
-        double latStart = swCellBounds.getBounds().getNe().getLat();
-        double lonStart = swCellBounds.getBounds().getNe().getLon();
+        double latStart = swCellBounds.getN();
+        double lonStart = swCellBounds.getE();
 
         String currentCellLocationId = swCellLocationId;
-        BoundsWithElevation currentCellBounds = swCellBounds;
+        Bounds currentCellBounds = swCellBounds;
         double currentCellNorthLatitude = latStart;
 
         while (currentCellNorthLatitude <= latMax) {
@@ -437,7 +432,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "n");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellNorthLatitude = currentCellBounds.getBounds().getNe().getLat();
+            currentCellNorthLatitude = currentCellBounds.getN();
         }
 
         currentCellLocationId = swCellLocationId;
@@ -448,7 +443,7 @@ public final class UnlCore {
 
             currentCellLocationId = adjacent(currentCellLocationId, "e");
             currentCellBounds = bounds(currentCellLocationId);
-            currentCellEastLongitude = currentCellBounds.getBounds().getNe().getLon();
+            currentCellEastLongitude = currentCellBounds.getE();
         }
 
         return lines;
@@ -456,7 +451,7 @@ public final class UnlCore {
 
     /**
      * Returns the vertical and horizontal lines that can be used to draw a UNL grid in the specified
-     * SW/NE latitude/longitude bounds, using the default precision: 9. Each line is represented by an array of two
+     * n, e, s, w bounds, using the default precision: 9. Each line is represented by an array of two
      * coordinates in the format: [[startLon, startLat], [endLon, endLat]].
      *
      * @param bounds the bound within to return the grid lines.

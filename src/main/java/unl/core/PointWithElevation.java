@@ -11,15 +11,15 @@ public class PointWithElevation {
     @NotNull
     public Elevation elevation;
     @NotNull
-    public BoundsWithElevation bounds;
+    public Bounds bounds;
 
-    public PointWithElevation(@NotNull Point coordinates, @NotNull Elevation elevation, @NotNull BoundsWithElevation bounds) {
+    public PointWithElevation(@NotNull Point coordinates, @NotNull Elevation elevation, @NotNull Bounds bounds) {
         this.coordinates = coordinates;
         this.elevation = elevation;
         this.bounds = bounds;
     }
 
-    public PointWithElevation(@NotNull Point coordinates, @NotNull BoundsWithElevation bounds) {
+    public PointWithElevation(@NotNull Point coordinates, @NotNull Bounds bounds) {
         this(coordinates, UnlCore.DEFAULT_ELEVATION, bounds);
     }
 
@@ -33,7 +33,7 @@ public class PointWithElevation {
     }
 
     @NotNull
-    public BoundsWithElevation getBounds() {
+    public Bounds getBounds() {
         return bounds;
     }
 
