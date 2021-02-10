@@ -1,12 +1,54 @@
 # UNL Core Java
 
 This library can be used to convert a UNL locationId to/from a latitude/longitude point. It also contains helper functions like retrieving the bounds of a UNL cell or the UNL grid lines for a given boundingbox (these can be used to draw a UNL cell or a UNL grid).
-
+ 
 ## Maven project
 
 To add the package as a dependecy to a Maven project the following steps need to be done: 
 
-1. Add the following dependecy to the dependencies element of your project pom.xml file:
+1. Authenticate to GithubPackages
+You can authenticate to GitHub Packages with Apache Maven by editing your settings.xml file to include your personal access token. Replace USERNAME with your GitHub username and TOKEN with your personall access token.
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+        <repository>
+          <id>github</id>
+          <name>GitHub u-n-l Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/u-n-l/core-java</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>github</id>
+      <username>USERNAME</username>
+      <password>TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+2. Add the following dependecy to the dependencies element of your project pom.xml file:
 
 ```xml
 <dependency>
@@ -27,15 +69,21 @@ For more information, see the official guide: [Configuring Gradle for use with G
 
 To add the package as a dependency to your gradle project you must:
 
-1. Add GithubPackages in the repositories section:
+1. Authenticate to GitHubPackages. Replace USERNAME with your GitHub username and TOKEN with your personal access token.
+
 ```
 repositories {
       maven {
           name = "GitHubPackages"
           url = uri("https://maven.pkg.github.com/u-n-l/core-java")
+          credentials {
+              username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+              password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+          }
       }
   }
 ```
+
 2. Add the unl core package dependency to your build.gradle file:
 ```
 implementation 'unl:core:1.0.1'
