@@ -75,7 +75,7 @@ To add the package as a dependency to your gradle project you must:
 repositories {
       maven {
           name = "GitHubPackages"
-          url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+          url = uri("https://maven.pkg.github.com/u-n-l/core-java")
           credentials {
               username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
               password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
