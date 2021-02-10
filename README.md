@@ -6,7 +6,7 @@ This library can be used to convert a UNL locationId to/from a latitude/longitud
 
 To add the package as a dependecy to a Maven project the following steps need to be done: 
 
-1. Authenticate to GithubPckages
+1. Authenticate to GithubPackages
 You can authenticate to GitHub Packages with Apache Maven by editing your settings.xml file to include your personal access token. Replace USERNAME with your GitHub username and TOKEN with your personall access token.
 
 ```xml
